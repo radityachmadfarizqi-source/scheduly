@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tambah Deadline</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#6C63FF,#4B44D4);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    width:700px;
+    background:white;
+    border-radius:20px;
+    padding:40px;
+    border:2px solid black;
+    box-shadow:8px 8px 0 black;
+}
+
+h1{
+    margin-bottom:25px;
+    color:#333;
+}
+
+.input-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+input, select{
+    width:100%;
+    padding:14px;
+    border:2px solid #ddd;
+    border-radius:12px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    background:#6C63FF;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#554de6;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Tambah Deadline Tugas</h1>
+
+    <div class="input-group">
+        <label>Tambah Tugas</label>
+        <input type="text" id="title" placeholder="Contoh: Project HTML">
+    </div>
+
+    <div class="input-group">
+        <label>Mata Pelajaran</label>
+        <input type="text" id="subject" placeholder="Contoh: Informatika">
+    </div>
+
+    <div class="input-group">
+        <label>Terakhir Dikumpul Tanggal</label>
+        <input type="date" id="date">
+    </div>
+
+    <div class="input-group">
+        <label>Progres Tugas</label>
+        <select id="status">
+            <option>Belum Dikerjakan</option>
+            <option>Sedang Dikerjakan</option>
+            <option>Sudah Selesai</option>
+        </select>
+    </div>
+
+    <button onclick="saveTask()">Simpan Deadline</button>
+</div>
+
+<script>
+const editIndex = localStorage.getItem("editTask");
+
+window.onload = function(){
+    if(editIndex !== null){
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        let task = tasks[editIndex];
+
+        if(task){
+            document.getElementById("title").value = task.title;
+            document.getElementById("subject").value = task.subject;
+            document.getElementById("date").value = task.date;
+            document.getElementById("status").value = task.status;
+        }
+    }
+};
+
+function saveTask(){
+    const title = document.getElementById("title").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const date = document.getElementById("date").value;
+    const status = document.getElementById("status").value;
+
+    if(!title || !subject || !date){
+        alert("Isi semua data dulu!");
+        return;
+    }
+
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    const newTask = {
+        title,
+        subject,
+        date,
+        status
+    };
+
+    if(editIndex !== null){
+        tasks[editIndex] = newTask;
+        localStorage.removeItem("editTask");
+    } else {
+        tasks.push(newTask);
+    }
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    alert("Deadline berhasil disimpan!");
+    window.location.href = "deadline.html";
+}
+</script>
+
+</body>
+</html>

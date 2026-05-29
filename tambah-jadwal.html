@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tambah Jadwal</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+
+
+body{
+    background:linear-gradient(135deg,#6C63FF,#4B44D4);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    width:700px;
+    background:white;
+    border-radius:20px;
+    padding:40px;
+    border:2px solid black;
+    box-shadow:8px 8px 0 black;
+}
+
+h1{
+    margin-bottom:25px;
+    color:#333;
+}
+
+.input-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:2px solid #ddd;
+    border-radius:12px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    background:#6C63FF;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+select{
+    width:100%;
+    padding:14px;
+    border:2px solid #ddd;
+    border-radius:12px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Tambah Jadwal</h1>
+
+    <div class="input-group">
+        <label>Mata Pelajaran</label>
+        <input type="text" id="subject">
+    </div>
+
+    <div class="input-group">
+        <label>Ruang</label>
+        <input type="text" id="room">
+    </div>
+
+    <div class="input-group">
+        <label>Jam</label>
+        <input type="time" id="time">
+    </div>
+
+    <div class="input-group">
+        <label>Hari</label>
+        <select id="day">
+            <option>Senin</option>
+            <option>Selasa</option>
+            <option>Rabu</option>
+            <option>Kamis</option>
+            <option>Jumat</option>
+        </select>
+    </div>
+
+    <button onclick="saveSchedule()">Simpan Jadwal</button>
+</div>
+
+<script>
+const editIndex = localStorage.getItem("editIndex");
+
+window.onload = function () {
+    if (editIndex !== null) {
+        let schedules = JSON.parse(localStorage.getItem("schedules")) || [];
+        let schedule = schedules[editIndex];
+
+        if(schedule){
+            document.getElementById("subject").value = schedule.subject;
+            document.getElementById("room").value = schedule.room;
+            document.getElementById("time").value = schedule.time;
+            document.getElementById("day").value = schedule.day || "Senin";
+        }
+    }
+};
+
+function saveSchedule() {
+    const subject = document.getElementById("subject").value.trim();
+    const room = document.getElementById("room").value.trim();
+    const time = document.getElementById("time").value;
+    const day = document.getElementById("day").value;
+
+    if (!subject || !room || !time) {
+        alert("Isi semua data dulu!");
+        return;
+    }
+
+    let schedules = JSON.parse(localStorage.getItem("schedules")) || [];
+
+    const newSchedule = {
+        subject: subject,
+        room: room,
+        time: time,
+        day: day
+    };
+
+    if (editIndex !== null) {
+        schedules[editIndex] = newSchedule;
+        localStorage.removeItem("editIndex");
+    } else {
+        schedules.push(newSchedule);
+    }
+
+    localStorage.setItem("schedules", JSON.stringify(schedules));
+
+    alert("Jadwal berhasil disimpan!");
+    window.location.href = "jadwal.html";
+}
+</script>
+
+</body>
+</html>
